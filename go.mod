@@ -1,4 +1,4 @@
-module github.com/hashicorp/terraform-provider-scaffolding
+module github.com/itmadesimple/terraform-provider-mailjet
 
 go 1.17
 
