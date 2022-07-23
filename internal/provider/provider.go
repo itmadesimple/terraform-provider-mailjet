@@ -2,9 +2,9 @@ package provider
 
 import (
 	"context"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/mailjet/mailjet-apiv3-go/v4"
 )
 
 func init() {
@@ -26,11 +26,12 @@ func init() {
 func New(version string) func() *schema.Provider {
 	return func() *schema.Provider {
 		p := &schema.Provider{
-			DataSourcesMap: map[string]*schema.Resource{
+			Schema: configSchema(),
+			/*DataSourcesMap: map[string]*schema.Resource{
 				"scaffolding_data_source": dataSourceScaffolding(),
-			},
+			},*/
 			ResourcesMap: map[string]*schema.Resource{
-				"scaffolding_resource": resourceScaffolding(),
+				"mailjet_subaccount": resourceMailjetSubaccount(),
 			},
 		}
 
@@ -40,18 +41,32 @@ func New(version string) func() *schema.Provider {
 	}
 }
 
-type apiClient struct {
-	// Add whatever fields, client or connection info, etc. here
-	// you would need to setup to communicate with the upstream
-	// API.
+func configSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"public_key": {
+			Type:     schema.TypeString,
+			Description: "Mailjet public API Key (main account)",
+			Optional: false,
+		},
+		"private_key": {
+			Type:     schema.TypeString,
+			Description: "Mailjet private API Key (main account)",
+			Optional: false,
+		},
+	}
 }
 
 func configure(version string, p *schema.Provider) func(context.Context, *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	return func(context.Context, *schema.ResourceData) (interface{}, diag.Diagnostics) {
+	return func(c context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 		// Setup a User-Agent for your API client (replace the provider name for yours):
 		// userAgent := p.UserAgent("terraform-provider-scaffolding", version)
 		// TODO: myClient.UserAgent = userAgent
 
-		return &apiClient{}, nil
+		publicKey := d.Get("public_key").(string)
+		privateKey := d.Get("private_key").(string)
+
+		mailjetClient := mailjet.NewMailjetClient(publicKey, privateKey)
+
+		return &mailjetClient, nil
 	}
 }
