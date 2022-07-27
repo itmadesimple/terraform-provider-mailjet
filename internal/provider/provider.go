@@ -47,11 +47,13 @@ func configSchema() map[string]*schema.Schema {
 			Type:     schema.TypeString,
 			Description: "Mailjet public API Key (main account)",
 			Optional: false,
+			Required: true,
 		},
 		"private_key": {
 			Type:     schema.TypeString,
 			Description: "Mailjet private API Key (main account)",
 			Optional: false,
+			Required: true,
 		},
 	}
 }
