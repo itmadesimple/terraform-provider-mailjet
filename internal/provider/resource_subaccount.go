@@ -26,6 +26,7 @@ func resourceMailjetSubaccount() *schema.Resource {
 				Description: "User readable name for this API Key.",
 				Type:        schema.TypeString,
 				Optional:    false,
+				Required:    true,
 				ForceNew:    false,
 			},
 			"active": {
