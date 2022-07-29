@@ -69,6 +69,6 @@ func configure(version string, p *schema.Provider) func(context.Context, *schema
 
 		mailjetClient := mailjet.NewMailjetClient(publicKey, privateKey)
 
-		return &mailjetClient, nil
+		return mailjetClient, nil
 	}
 }
